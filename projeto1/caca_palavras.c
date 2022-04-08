@@ -151,10 +151,10 @@ char word_search[9][9] = {
     ((int) found_row_word3 == 1 || (int) found_column_word3 == 1) &&
     ((int) found_row_word4 == 1 || (int) found_column_word4 == 1) &&
     ((int) found_row_word5 == 1 || (int) found_column_word5 == 1) ){
-        printf("Todas as palavras foram encontradas :-) ");
+        printf("Todas as palavras foram encontradas :-)\n");
     }
     else{
-        printf("Ta faltando palavra :-( ");
+        printf("Ta faltando palavra :-(\n");
     }
 }
 
