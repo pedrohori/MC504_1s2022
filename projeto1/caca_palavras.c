@@ -1,3 +1,18 @@
+/* MC504 - Sistemas Operacionais 1s2022
+    Projeto 1: Aplicação Multithread
+    Alunos: Marcos Cunha Rosa - 240815
+            Matheus Augusto da Silva Candido - 241640
+            Pedro Hori Bueno - 223402
+    Tema: Caça-palavras
+
+    Esse projeto utiliza dos conceitos de multithreads para percorrer um caça-palavras.
+    Utilizamos duas threads para cada palavra que deverá ser encontrada,
+sendo que uma procura a palavra analisando as linhas, e outra analisando as colunas. 
+    Para saber se a palavra foi encontrada por uma das threads, uma delas deverá ter como retorno o valor 1.
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -8,36 +23,41 @@ typedef struct{
 
 } thread_parameter;
 
-void * check_columns(void * params) {
+/* Para este trabalho utilizamos uma struct com um campo para a palavra a ser procurada, e tambem o board do caça-palavras.
+   Definimos um board de 9 linhas e 9 colunas, com um char por posição no board, contendo 5 palavras a serem encontradas.
+   Assim, temos ao todo 10 threads no projeto.
+*/
+
+void * check_columns(void * params) { // procura uma palavra percorrendo as colunas da matriz
     thread_parameter * value = (thread_parameter *) params;
     char *word = value->word;
     int column = 0;
     int row = 0;
     int aux_word = 0;
-    for (column=0; column < 9; column++){
+    for (column=0; column < 9; column++){ // percorre cada coluna até encontrar ou não a palavra
         row = 0;
-        while (row < 9){
-            if(word[aux_word] == value->word_search[row][column]){
+        while (row < 9){//percorre a coluna até encontra a palavra desejada ou até terminar a coluna
+            if(word[aux_word] == value->word_search[row][column]){//verifica se a letra na posição analisada compõe a palavra na ordem necessaria
                 aux_word++;
             }
-            else{
+            else{//caso encontre uma letra diferente da esperada na palavra, reinicia a posiçao a ser analisada na palavra
                 aux_word = 0;
                 if(word[aux_word] == value->word_search[row][column]){
                     aux_word++;
                 }
             }
 
-            if(aux_word == 9 || word[aux_word] == NULL){
+            if(aux_word == 9 || word[aux_word] == NULL){// se a palavra foi encontrada ele retornara da função com o valor 1
                 return (void *) 1;
             }
             row++;
         }
 
     }
-    return (void *) 0;
+    return (void *) 0; // caso percorra todas as colunas e não encontre a palavra, retorna 0
 }
 
-void * check_rows(void * params) {
+void * check_rows(void * params) { // procura uma palavra percorrendo as linhas da matriz
 
     thread_parameter * value = (thread_parameter *) params;
     char *word = value->word;
@@ -46,26 +66,26 @@ void * check_rows(void * params) {
     int aux_word = 0;
     for (row=0; row < 9; row++){
         column = 0;
-        while (column < 9){
+        while (column < 9){// percorre a linha até encontrar a palavra ou terminar a linha
             //printf("%c / %c\n", word[aux_word], value->word_search[row][column]);
-            if(word[aux_word] == value->word_search[row][column]){
+            if(word[aux_word] == value->word_search[row][column]){//verifica se a letra na posição analisada compõe a palavra na ordem necessaria
                 aux_word++;
             }
-            else{
+            else{//caso encontre uma letra diferente da esperada na palavra, reinicia a posiçao a ser analisada na palavra
                 aux_word = 0;
                 if(word[aux_word] == value->word_search[row][column]){
                     aux_word++;
                 }
             }
 
-            if(aux_word == 9 || word[aux_word] == NULL){
+            if(aux_word == 9 || word[aux_word] == NULL){ // se a palavra foi encontrada ele retornara da função com o valor 1
                 return (void *) 1;
             }
             column++;
         }
 
     }
-    return (void *) 0;
+    return (void *) 0; // caso percorra todas as linhas e não encontre a palavra, retorna 0
 }
 void main(){
 
