@@ -1,1 +1,52 @@
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+
+#define N_compradores 50
+
+sem_t estoque;
+sem_t estoque_atualizado;
+
+void* f_fabrica(void *v) {
+    while(1) {
+        sleep(1);
+        sem_wait(&estoque_atualizado);
+        sem_post(&estoque);
+        printf("A fabrica adicionou um produto ao estoque.\n");
+        sem_post(&estoque_atualizado);
+    }
+    return(NULL)
+}
+
+void* f_comprador(void *v) {
+    int id = *(int*) v;
+    sleep(random()%3);
+    printf("O comprador %d deseja comprar um produto.\n", id);
+    sem_wait(&estoque)
+    sem_wait(&estoque_atualizado);
+    printf("O comprador %d comprou um produto do estoque.\n", id);
+    sem_post(&estoque_atualizado);
+
+}
+
+int main() {
+  pthread_t thr_comprador[N_compradores], thr_fabrica;
+  int i, id[N_compradores];
+
+  sem_init(&sem_estoque, 0, 0);
+  sem_init(&sem_estoque_atualizado, 0, 0);
+  
+  for (i = 0; i < N_compradores; i++) {
+    id[i] = i;
+    pthread_create(&thr_comprador[i], NULL, f_comprador, (void*) &id[i]);
+  }
+
+  pthread_create(&thr_fabrica, NULL, f_fabrica, NULL);
+  
+  for (i = 0; i < N_compradores; i++) 
+    pthread_join(thr_clientes[i], NULL);  
+  return 0;
+}
